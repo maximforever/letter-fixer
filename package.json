@@ -1,0 +1,19 @@
+{
+  "name": "typing_trainer",
+  "version": "1.0.0",
+  "description": "a small tool to help improve your typing",
+  "main": "index.js",
+  "scripts": {
+    "ts": "npx tsc -w",
+    "scss": "sass --watch src/stylesheet.scss:stylesheet.css",
+    "dev": "npm-run-all --parallel --print-label ts scss",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Max Pekarsky",
+  "license": "ISC",
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.64.1",
+    "typescript": "^5.1.6"
+  }
+}
