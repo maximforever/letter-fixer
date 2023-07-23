@@ -1,7 +1,7 @@
 "use strict";
-var audio_1 = new Audio("sounds/1.mp3");
-var audio_2 = new Audio("sounds/2.mp3");
-var audio_3 = new Audio("sounds/3.mp3");
+const audio_1 = new Audio("sounds/1.mp3");
+const audio_2 = new Audio("sounds/2.mp3");
+const audio_3 = new Audio("sounds/3.mp3");
 const sounds = [audio_1, audio_2, audio_3];
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const PUNCTUATION = ".,?!'\";:";
@@ -82,10 +82,10 @@ const handleTyping = (e) => {
             lettersTyped--;
             const previousLetterDiv = document.getElementById(lettersTyped.toString());
             if (previousLetterDiv !== null) {
+                // TODO; this should be in updateLetterStyling();
                 thisLetterDiv.className = "letter";
                 previousLetterDiv.className = "letter current";
             }
-            //updateCurrentLetterStyling();
             updateLetterDebugger();
             return;
         }
