@@ -17,14 +17,22 @@ const currentLetterDiv = document.getElementById("current-letter");
 const allLetters = INITIAL_TEXT.split("");
 let lettersTyped = 0;
 let counter = 0;
-for (const letter of allLetters) {
-    const letterDiv = document.createElement("span");
-    letterDiv.className = "letter";
-    letterDiv.id = counter.toString();
-    counter++;
-    letterDiv.innerText = letter;
-    text === null || text === void 0 ? void 0 : text.appendChild(letterDiv);
-}
+const init = () => {
+    addLettersToScreen();
+    addEventListeners();
+    updateLetterDebugger();
+    updateCurrentLetterStyling();
+};
+const addLettersToScreen = () => {
+    for (const letter of allLetters) {
+        const letterDiv = document.createElement("span");
+        letterDiv.className = "letter";
+        letterDiv.id = counter.toString();
+        counter++;
+        letterDiv.innerText = letter;
+        text === null || text === void 0 ? void 0 : text.appendChild(letterDiv);
+    }
+};
 const playRandomSound = () => {
     for (const sound of sounds) {
         sound.pause();
@@ -82,6 +90,7 @@ const updateCurrentLetterStyling = () => {
         }
     }
 };
-document.addEventListener("keydown", handleTyping);
-updateLetterDebugger();
-updateCurrentLetterStyling();
+const addEventListeners = () => {
+    document.addEventListener("keydown", handleTyping);
+};
+init();

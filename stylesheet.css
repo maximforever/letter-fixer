@@ -8,7 +8,7 @@ body {
   height: 100vh;
   width: 100vw;
   background: #eaeaea;
-  color: black;
+  color: #404040;
 }
 
 #text {
@@ -25,14 +25,20 @@ body {
   height: 2.5rem;
   width: 1.8rem;
   font-size: 1.3rem;
+  user-select: none;
   border-radius: 0.2rem;
 }
 .letter.correct {
   background: #b9ecb9;
 }
 .letter.incorrect {
-  background: #f12357;
+  background: #ff9db6;
 }
+.letter.current {
+  border-bottom: 2px solid #404040;
+  border-radius: 0;
+}
+
 #debug-stats {
   position: absolute;
   top: 2rem;
