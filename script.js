@@ -17,11 +17,31 @@ const currentLetterDiv = document.getElementById("current-letter");
 const allLetters = INITIAL_TEXT.split("");
 let lettersTyped = 0;
 let counter = 0;
+let characterStats = {};
+const progressByLetter = new Array(allLetters.length);
 const init = () => {
+    createCharacterObject();
+    createProgressArray();
     addLettersToScreen();
     addEventListeners();
     updateLetterDebugger();
     updateCurrentLetterStyling();
+};
+const createCharacterObject = () => {
+    for (const char of ALLOWED_LETTERS) {
+        if (characterStats[char] !== undefined) {
+            continue;
+        }
+        else {
+            characterStats[char] = {
+                typed: 0,
+                correct: 0,
+            };
+        }
+    }
+};
+const createProgressArray = () => {
+    progressByLetter.fill("incomplete");
 };
 const addLettersToScreen = () => {
     for (const letter of allLetters) {
@@ -62,23 +82,27 @@ const handleTyping = (e) => {
             lettersTyped--;
             const previousLetterDiv = document.getElementById(lettersTyped.toString());
             if (previousLetterDiv !== null) {
-                previousLetterDiv.className = "letter";
+                thisLetterDiv.className = "letter";
+                previousLetterDiv.className = "letter current";
             }
+            //updateCurrentLetterStyling();
             updateLetterDebugger();
-            updateCurrentLetterStyling();
             return;
         }
         if (e.key === currentLetter || (e.key === " " && currentLetter === " ")) {
             thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.remove("incorrect");
-            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.add("correct");
+            progressByLetter[lettersTyped] =
+                progressByLetter[lettersTyped] === "incorrect" ? "fixed" : "correct";
+            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.add(progressByLetter[lettersTyped]);
         }
         else {
             thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.remove("correct");
             thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.add("incorrect");
+            progressByLetter[lettersTyped] = "incorrect";
         }
         lettersTyped++;
-        updateLetterDebugger();
         updateCurrentLetterStyling();
+        updateLetterDebugger();
     }
 };
 const updateCurrentLetterStyling = () => {
@@ -87,6 +111,9 @@ const updateCurrentLetterStyling = () => {
         letter.classList.remove("current");
         if (letter.id === lettersTyped.toString()) {
             letter.classList.add("current");
+            if (progressByLetter[lettersTyped] !== "incomplete") {
+                letter.classList.add(progressByLetter[lettersTyped]);
+            }
         }
     }
 };

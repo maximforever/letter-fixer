@@ -15,7 +15,7 @@ body {
   width: 800px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.1rem;
+  gap: 0.2rem;
 }
 
 .letter {
@@ -24,6 +24,7 @@ body {
   align-items: center;
   height: 2.5rem;
   width: 1.8rem;
+  border-bottom: 2px solid transparent;
   font-size: 1.3rem;
   user-select: none;
   border-radius: 0.2rem;
@@ -34,8 +35,11 @@ body {
 .letter.incorrect {
   background: #ff9db6;
 }
+.letter.fixed {
+  background: #fffbd8;
+}
 .letter.current {
-  border-bottom: 2px solid #404040;
+  border-color: #404040;
   border-radius: 0;
 }
 

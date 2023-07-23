@@ -18,15 +18,43 @@ const text = document.getElementById("text");
 const lettersTypedCountDiv = document.getElementById("letters-typed");
 const currentLetterDiv = document.getElementById("current-letter");
 
+type CharStatsType = {
+  typed: number;
+  correct: number;
+};
+
+type LetterState = "correct" | "incorrect" | "fixed" | "incomplete";
+
 const allLetters = INITIAL_TEXT.split("");
 let lettersTyped = 0;
 let counter = 0;
+let characterStats: { [key: string]: CharStatsType } = {};
+const progressByLetter: LetterState[] = new Array(allLetters.length);
 
 const init = () => {
+  createCharacterObject();
+  createProgressArray();
   addLettersToScreen();
   addEventListeners();
   updateLetterDebugger();
   updateCurrentLetterStyling();
+};
+
+const createCharacterObject = () => {
+  for (const char of ALLOWED_LETTERS) {
+    if (characterStats[char] !== undefined) {
+      continue;
+    } else {
+      characterStats[char] = {
+        typed: 0,
+        correct: 0,
+      };
+    }
+  }
+};
+
+const createProgressArray = () => {
+  progressByLetter.fill("incomplete");
 };
 
 const addLettersToScreen = () => {
@@ -64,6 +92,7 @@ const handleTyping = (e: KeyboardEvent) => {
   playRandomSound();
   const currentLetter = allLetters[lettersTyped];
   const thisLetterDiv = document.getElementById(lettersTyped.toString());
+
   if (
     e.key === "Backspace" ||
     e.key === " " ||
@@ -79,26 +108,30 @@ const handleTyping = (e: KeyboardEvent) => {
       );
 
       if (previousLetterDiv !== null) {
-        previousLetterDiv.className = "letter";
+        thisLetterDiv.className = "letter";
+        previousLetterDiv.className = "letter current";
       }
 
+      //updateCurrentLetterStyling();
       updateLetterDebugger();
-      updateCurrentLetterStyling();
       return;
     }
 
     if (e.key === currentLetter || (e.key === " " && currentLetter === " ")) {
       thisLetterDiv?.classList.remove("incorrect");
-      thisLetterDiv?.classList.add("correct");
+      progressByLetter[lettersTyped] =
+        progressByLetter[lettersTyped] === "incorrect" ? "fixed" : "correct";
+
+      thisLetterDiv?.classList.add(progressByLetter[lettersTyped]);
     } else {
       thisLetterDiv?.classList.remove("correct");
       thisLetterDiv?.classList.add("incorrect");
+      progressByLetter[lettersTyped] = "incorrect";
     }
 
     lettersTyped++;
-
-    updateLetterDebugger();
     updateCurrentLetterStyling();
+    updateLetterDebugger();
   }
 };
 
@@ -110,6 +143,9 @@ const updateCurrentLetterStyling = () => {
 
     if (letter.id === lettersTyped.toString()) {
       letter.classList.add("current");
+      if (progressByLetter[lettersTyped] !== "incomplete") {
+        letter.classList.add(progressByLetter[lettersTyped]);
+      }
     }
   }
 };
