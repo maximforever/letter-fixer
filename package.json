@@ -6,7 +6,7 @@
   "scripts": {
     "ts": "npx tsc -w",
     "scss": "sass --watch src/stylesheet.scss:stylesheet.css",
-    "dev": "npm-run-all --parallel --print-label ts scss",
+    "start": "npm-run-all --parallel --print-label ts scss",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Max Pekarsky",

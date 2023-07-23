@@ -6,5 +6,5 @@ It's built with TS and SCSS from the `src` directory, which compile to the JS an
 
 To run:
 
-* `npm i`
-* `npm run dev`
+- `npm i`
+- `npm run start`
