@@ -1,8 +1,53 @@
 body {
+  font-family: "Anonymous Pro", monospace;
   margin: 0;
   padding: 0;
-  
-  p {
-    color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+  width: 100vw;
+
+  background: #eaeaea;
+  color: black;
+}
+
+#text {
+  width: 800px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem;
+}
+
+.letter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  width: 1.8rem;
+  //border: 2px solid #dedede;
+  font-size: 1.3rem;
+
+  border-radius: 0.2rem;
+
+  &.correct {
+    background: #b9ecb9;
   }
+
+  &.incorrect {
+    background: #f12357;
+  }
+
+  &.current {
+    //border-color: black;
+  }
+}
+
+#debug-stats {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  padding: 1rem;
+  font-size: 1.3rem;
 }
