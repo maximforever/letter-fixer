@@ -67,7 +67,7 @@ const setUpCharacterProgress = () => {
     STATE.characterProgress = new Array(STATE.allLetters.length);
     STATE.characterProgress.fill("incomplete");
 };
-const playRandomSound = () => {
+const playKeySound = () => {
     for (const sound of sounds) {
         sound.pause();
         sound.currentTime = 0;
@@ -92,6 +92,18 @@ const recordCharacter = (correct) => {
     characterStats.averageTimeToType = newAverageTime;
     characterStats.correct += correct ? 1 : 0;
     STATE.lastLetterTypedTimestamp = now;
+};
+const updateKeyLabel = (correct) => {
+    if (STATE.lettersTyped === 0) {
+        //don't return the first char for now
+        return;
+    }
+    const character = STATE.allLetters[STATE.lettersTyped].toLowerCase();
+    const characterStats = STATE.characterStats[character];
+    const label = document.getElementById(`${character}-key-incorrect`);
+    if (label != null) {
+        label.innerText = `${Math.floor((characterStats.correct / characterStats.typed) * 100)}%`;
+    }
 };
 const isValidChar = (key) => {
     return (key === "Backspace" ||
@@ -127,14 +139,17 @@ const typeCharacter = (correct) => {
         if (STATE.characterProgress[STATE.lettersTyped] === "incomplete") {
             STATE.characterProgress[STATE.lettersTyped] = "correct";
             recordCharacter(true);
+            updateKeyLabel(true);
         }
         else if (STATE.characterProgress[STATE.lettersTyped] === "incorrect") {
+            // note that if the char is fixed from incorrect, we don't count that as a correct type
             STATE.characterProgress[STATE.lettersTyped] = "fixed";
         }
     }
     else {
         STATE.characterProgress[STATE.lettersTyped] = "incorrect";
         recordCharacter(false);
+        updateKeyLabel(false);
     }
     nextLetterDiv === null || nextLetterDiv === void 0 ? void 0 : nextLetterDiv.classList.add("current");
     thisLetterDiv.classList.remove("current");
@@ -142,10 +157,10 @@ const typeCharacter = (correct) => {
     STATE.lettersTyped++;
 };
 const handleTyping = (e) => {
-    playRandomSound();
     if (!isValidChar(e.key)) {
         return;
     }
+    playKeySound();
     const currentLetter = STATE.allLetters[STATE.lettersTyped];
     const thisLetterDiv = document.getElementById(STATE.lettersTyped.toString());
     if (e.key === "Backspace") {
