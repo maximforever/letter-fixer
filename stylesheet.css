@@ -1,12 +1,13 @@
 body {
   font-family: "Anonymous Pro", monospace;
   margin: 0;
-  padding: 0;
+  padding-top: 20vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  max-height: 100vh;
   width: 100vw;
+  overflow: none;
   background: #eaeaea;
   color: #404040;
 }
@@ -28,19 +29,23 @@ body {
   font-size: 1.3rem;
   user-select: none;
   border-radius: 0.2rem;
+  background: #f0f0f0;
 }
 .letter.correct {
   background: #b9ecb9;
+  color: #085d09;
 }
 .letter.incorrect {
   background: #ff9db6;
+  color: #5d353f;
 }
 .letter.fixed {
   background: #fffbd8;
+  color: #665d0e;
 }
 .letter.current {
   border-color: #404040;
-  border-radius: 0;
+  border-radius: 0.2rem 0.2rem 0 0;
 }
 
 #debug-stats {
@@ -49,6 +54,26 @@ body {
   left: 2rem;
   padding: 1rem;
   font-size: 1.3rem;
+}
+
+#keyboard {
+  padding-top: 10vh;
+}
+#keyboard .row {
+  justify-content: center;
+  display: flex;
+  padding: 0.5rem 0;
+  gap: 0.5rem;
+}
+#keyboard .keyboard-key {
+  border: 1px solid gray;
+  height: 2rem;
+  width: 2rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.2rem;
 }
 
 /*# sourceMappingURL=stylesheet.css.map */

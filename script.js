@@ -4,54 +4,67 @@ const audio_2 = new Audio("sounds/2.mp3");
 const audio_3 = new Audio("sounds/3.mp3");
 const sounds = [audio_1, audio_2, audio_3];
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-const PUNCTUATION = ".,?!'\";:";
-const ALLOWED_LETTERS = ALPHABET + PUNCTUATION;
-const INITIAL_TEXT = `Without a blush, men made their way in the world by the means of women blushing. 
-Such as were only beautiful gave their beauty, whence, without doubt, comes the proverb, 
-“The most beautiful girl in the world can only give what she has.” Such as were rich gave in addition a part of their money;`;
-// and a vast number of heroes of that gallant period may be cited who would neither have won their spurs in the first place,
-// nor their battles afterward, without the purse, more or less furnished, which their mistress fastened to the saddle bow.`;
-const text = document.getElementById("text");
+const PUNCTUATION = ".,?!'\";:- "; // the space at the end is intentional!
+const ALLOWED_CHARACTERS = ALPHABET + PUNCTUATION;
+const TEXT = `For such an enduringly popular writer, Alexandre Dumas, pere, has been surprisingly ill-served by his English-language translators.`;
+const STATE = {
+    allLetters: [],
+    characterStats: {},
+    characterProgress: [],
+    lettersTyped: 0,
+    lastLetterTypedTimestamp: null,
+};
 const lettersTypedCountDiv = document.getElementById("letters-typed");
 const currentLetterDiv = document.getElementById("current-letter");
-const allLetters = INITIAL_TEXT.split("");
-let lettersTyped = 0;
-let counter = 0;
-let characterStats = {};
-const progressByLetter = new Array(allLetters.length);
 const init = () => {
-    createCharacterObject();
-    createProgressArray();
-    addLettersToScreen();
-    addEventListeners();
-    updateLetterDebugger();
-    updateCurrentLetterStyling();
-};
-const createCharacterObject = () => {
-    for (const char of ALLOWED_LETTERS) {
-        if (characterStats[char] !== undefined) {
-            continue;
-        }
-        else {
-            characterStats[char] = {
-                typed: 0,
-                correct: 0,
-            };
-        }
+    if (lettersTypedCountDiv === null || currentLetterDiv === null) {
+        return;
     }
+    breakTextIntoCharacters();
+    addLetterElementsToScreen();
+    addEventListeners();
+    setUpCharacterStats();
+    setUpCharacterProgress();
+    underlineFirstLetter();
+    updateDebugger();
 };
-const createProgressArray = () => {
-    progressByLetter.fill("incomplete");
+const underlineFirstLetter = () => {
+    const firstLetterDiv = document.getElementById("0");
+    firstLetterDiv === null || firstLetterDiv === void 0 ? void 0 : firstLetterDiv.classList.add("current");
 };
-const addLettersToScreen = () => {
-    for (const letter of allLetters) {
+const breakTextIntoCharacters = () => {
+    const individualCharacters = TEXT.split("");
+    STATE.allLetters = individualCharacters;
+};
+const addLetterElementsToScreen = () => {
+    const textDiv = document.getElementById("text");
+    let counter = 0;
+    for (const letter of STATE.allLetters) {
         const letterDiv = document.createElement("span");
         letterDiv.className = "letter";
         letterDiv.id = counter.toString();
         counter++;
         letterDiv.innerText = letter;
-        text === null || text === void 0 ? void 0 : text.appendChild(letterDiv);
+        textDiv === null || textDiv === void 0 ? void 0 : textDiv.appendChild(letterDiv);
     }
+};
+const setUpCharacterStats = () => {
+    for (const char of ALLOWED_CHARACTERS) {
+        if (STATE.characterStats[char] !== undefined) {
+            continue;
+        }
+        else {
+            STATE.characterStats[char] = {
+                typed: 0,
+                correct: 0,
+                averageTimeToType: 0,
+            };
+        }
+    }
+};
+const setUpCharacterProgress = () => {
+    STATE.characterProgress = new Array(STATE.allLetters.length);
+    STATE.characterProgress.fill("incomplete");
 };
 const playRandomSound = () => {
     for (const sound of sounds) {
@@ -61,63 +74,96 @@ const playRandomSound = () => {
     const randomAudio = sounds[Math.floor(Math.random() * sounds.length)];
     randomAudio.play();
 };
-const updateLetterDebugger = () => {
+const recordCharacter = (correct) => {
+    const character = STATE.allLetters[STATE.lettersTyped].toLowerCase();
+    const characterStats = STATE.characterStats[character];
+    const now = Date.now();
+    if (STATE.lastLetterTypedTimestamp === null) {
+        STATE.lastLetterTypedTimestamp = now;
+        return;
+    }
+    const timeToTypeThisCharacter = now - STATE.lastLetterTypedTimestamp;
+    console.log(`recording ${character} as ${correct ? "correct" : "incorrect"}`);
+    console.log(`Took ${timeToTypeThisCharacter} ms`);
+    const newAverageTime = Math.floor((characterStats.averageTimeToType + timeToTypeThisCharacter) /
+        (characterStats.typed + 1));
+    characterStats.typed++;
+    characterStats.averageTimeToType = newAverageTime;
+    characterStats.correct += correct ? 1 : 0;
+    STATE.lastLetterTypedTimestamp = now;
+};
+const isValidChar = (key) => {
+    return (key === "Backspace" ||
+        key === " " ||
+        ALLOWED_CHARACTERS.includes(key.toLocaleLowerCase()));
+};
+const updateDebugger = () => {
     if (lettersTypedCountDiv === null || currentLetterDiv === null) {
         return;
     }
-    lettersTypedCountDiv.innerText = lettersTyped.toString();
-    currentLetterDiv.innerText = allLetters[lettersTyped];
+    lettersTypedCountDiv.innerText = STATE.lettersTyped.toString();
+    currentLetterDiv.innerText = STATE.allLetters[STATE.lettersTyped];
+};
+const deleteCharacter = () => {
+    const thisLetterDiv = document.getElementById(STATE.lettersTyped.toString());
+    const previousLetterDiv = document.getElementById((STATE.lettersTyped - 1).toString());
+    if (STATE.lettersTyped === 0 || previousLetterDiv === null) {
+        return;
+    }
+    if (thisLetterDiv !== null) {
+        thisLetterDiv.className = "letter";
+    }
+    previousLetterDiv.className = "letter current";
+    STATE.lettersTyped--;
+};
+const typeCharacter = (correct) => {
+    const thisLetterDiv = document.getElementById(STATE.lettersTyped.toString());
+    const nextLetterDiv = document.getElementById((STATE.lettersTyped + 1).toString());
+    if (STATE.lettersTyped > STATE.allLetters.length || thisLetterDiv === null) {
+        return;
+    }
+    if (correct) {
+        if (STATE.characterProgress[STATE.lettersTyped] === "incomplete") {
+            STATE.characterProgress[STATE.lettersTyped] = "correct";
+            recordCharacter(true);
+        }
+        else if (STATE.characterProgress[STATE.lettersTyped] === "incorrect") {
+            STATE.characterProgress[STATE.lettersTyped] = "fixed";
+        }
+    }
+    else {
+        STATE.characterProgress[STATE.lettersTyped] = "incorrect";
+        recordCharacter(false);
+    }
+    nextLetterDiv === null || nextLetterDiv === void 0 ? void 0 : nextLetterDiv.classList.add("current");
+    thisLetterDiv.classList.remove("current");
+    thisLetterDiv.classList.add(STATE.characterProgress[STATE.lettersTyped]);
+    STATE.lettersTyped++;
 };
 const handleTyping = (e) => {
     playRandomSound();
-    const currentLetter = allLetters[lettersTyped];
-    const thisLetterDiv = document.getElementById(lettersTyped.toString());
-    if (e.key === "Backspace" ||
-        e.key === " " ||
-        ALLOWED_LETTERS.includes(e.key.toLowerCase())) {
-        if (e.key === "Backspace") {
-            if (lettersTyped < 1) {
-                return;
-            }
-            lettersTyped--;
-            const previousLetterDiv = document.getElementById(lettersTyped.toString());
-            if (previousLetterDiv !== null) {
-                // TODO; this should be in updateLetterStyling();
-                thisLetterDiv.className = "letter";
-                previousLetterDiv.className = "letter current";
-            }
-            updateLetterDebugger();
-            return;
-        }
+    if (!isValidChar(e.key)) {
+        return;
+    }
+    const currentLetter = STATE.allLetters[STATE.lettersTyped];
+    const thisLetterDiv = document.getElementById(STATE.lettersTyped.toString());
+    if (e.key === "Backspace") {
+        deleteCharacter();
+    }
+    else {
+        const currentLetter = STATE.allLetters[STATE.lettersTyped];
+        // this is a valid character other than backspace
         if (e.key === currentLetter || (e.key === " " && currentLetter === " ")) {
-            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.remove("incorrect");
-            progressByLetter[lettersTyped] =
-                progressByLetter[lettersTyped] === "incorrect" ? "fixed" : "correct";
-            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.add(progressByLetter[lettersTyped]);
+            typeCharacter(true);
         }
         else {
-            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.remove("correct");
-            thisLetterDiv === null || thisLetterDiv === void 0 ? void 0 : thisLetterDiv.classList.add("incorrect");
-            progressByLetter[lettersTyped] = "incorrect";
-        }
-        lettersTyped++;
-        updateCurrentLetterStyling();
-        updateLetterDebugger();
-    }
-};
-const updateCurrentLetterStyling = () => {
-    const letters = document.querySelectorAll(".letter");
-    for (const letter of letters) {
-        letter.classList.remove("current");
-        if (letter.id === lettersTyped.toString()) {
-            letter.classList.add("current");
-            if (progressByLetter[lettersTyped] !== "incomplete") {
-                letter.classList.add(progressByLetter[lettersTyped]);
-            }
+            typeCharacter(false);
         }
     }
 };
 const addEventListeners = () => {
     document.addEventListener("keydown", handleTyping);
+    document.addEventListener("keydown", updateDebugger);
 };
 init();
+//# sourceMappingURL=script.js.map

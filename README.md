@@ -8,3 +8,5 @@ To run:
 
 - `npm i`
 - `npm run start`
+- the script lives in `/src/script.ts`, which is compiled to `/script.js`
+- the styles live in `/src/stylesheet.scss`, which is compiled to `/stylesheet.js`
