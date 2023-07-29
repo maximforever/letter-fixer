@@ -14,6 +14,15 @@ body {
   color: #404040;
 }
 
+#logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  margin: 0;
+}
+
 #text {
   width: 800px;
   display: flex;
