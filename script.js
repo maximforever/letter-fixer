@@ -18,9 +18,6 @@ const STATE = {
 const lettersTypedCountDiv = document.getElementById("letters-typed");
 const currentLetterDiv = document.getElementById("current-letter");
 const init = () => {
-    if (lettersTypedCountDiv === null || currentLetterDiv === null) {
-        return;
-    }
     breakTextIntoCharacters();
     addLetterElementsToScreen();
     addEventListeners();
@@ -84,8 +81,6 @@ const recordCharacter = (correct) => {
         return;
     }
     const timeToTypeThisCharacter = now - STATE.lastLetterTypedTimestamp;
-    console.log(`recording ${character} as ${correct ? "correct" : "incorrect"}`);
-    console.log(`Took ${timeToTypeThisCharacter} ms`);
     const newAverageTime = Math.floor((characterStats.averageTimeToType + timeToTypeThisCharacter) /
         (characterStats.typed + 1));
     characterStats.typed++;
@@ -99,10 +94,21 @@ const updateKeyLabel = (correct) => {
         return;
     }
     const character = STATE.allLetters[STATE.lettersTyped].toLowerCase();
+    updateAccuracy(correct, character);
+    updateAverageTime(correct, character);
+};
+const updateAccuracy = (correct, character) => {
     const characterStats = STATE.characterStats[character];
     const label = document.getElementById(`${character}-key-incorrect`);
     if (label != null) {
         label.innerText = `${Math.floor((characterStats.correct / characterStats.typed) * 100)}%`;
+    }
+};
+const updateAverageTime = (correct, character) => {
+    const characterStats = STATE.characterStats[character];
+    const label = document.getElementById(`${character}-key-average-time-label`);
+    if (label != null) {
+        label.innerText = `${characterStats.averageTimeToType}ms`;
     }
 };
 const isValidChar = (key) => {

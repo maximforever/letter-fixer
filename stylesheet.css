@@ -66,9 +66,9 @@ body {
   gap: 0.5rem;
 }
 #keyboard .keyboard-key {
-  border: 1px solid gray;
-  height: 3.2rem;
-  width: 3.2rem;
+  border: 1px solid #c8c8c8;
+  height: 4rem;
+  width: 4rem;
   font-size: 1.4rem;
   font-weight: 600;
   display: flex;
@@ -78,7 +78,13 @@ body {
   border-radius: 0.2rem;
 }
 #keyboard .keyboard-key .incorrect-label {
+  color: #646464;
   padding-top: 0.4rem;
+  font-size: 0.8rem;
+}
+#keyboard .keyboard-key .average-time-label {
+  color: #646464;
+  padding-top: 0.2rem;
   font-size: 0.8rem;
 }
 
