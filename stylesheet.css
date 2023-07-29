@@ -7,18 +7,24 @@ body {
   align-items: center;
   max-height: 100vh;
   width: 100vw;
-  overflow: none;
+  overflow: hidden;
   background: #eaeaea;
   color: #404040;
 }
 
 #logo {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.5rem;
+  color: #999999;
   position: fixed;
   top: 1rem;
   left: 1rem;
   margin: 0;
+  font-family: "Arbutus Slab", serif;
+}
+
+a:active,
+a:visited {
+  color: black;
 }
 
 #text {
