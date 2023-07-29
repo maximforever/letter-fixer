@@ -7,7 +7,8 @@ const sounds = [audio_1, audio_2, audio_3];
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const PUNCTUATION = ".,?!'\";:- "; // the space at the end is intentional!
 const ALLOWED_CHARACTERS = ALPHABET + PUNCTUATION;
-const TEXT = `For such an enduringly popular writer, Alexandre Dumas, pere, has been surprisingly ill-served by his English-language translators.`;
+const TEXT = `For such an enduringly popular writer, Alexandre Dumas, pere,
+has been surprisingly ill-served by his English-language translators.`;
 // This is nowhere more true than in the case of his most famous and endlessly-adapted novel,
 // The Three Musketeers.`;
 
@@ -58,7 +59,7 @@ const underlineFirstLetter = () => {
 };
 
 const breakTextIntoCharacters = () => {
-  const individualCharacters = TEXT.split("");
+  const individualCharacters = TEXT.replace(/\n/g, " ").split("");
   STATE.allLetters = individualCharacters;
 };
 

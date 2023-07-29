@@ -6,7 +6,8 @@ const sounds = [audio_1, audio_2, audio_3];
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const PUNCTUATION = ".,?!'\";:- "; // the space at the end is intentional!
 const ALLOWED_CHARACTERS = ALPHABET + PUNCTUATION;
-const TEXT = `For such an enduringly popular writer, Alexandre Dumas, pere, has been surprisingly ill-served by his English-language translators.`;
+const TEXT = `For such an enduringly popular writer, Alexandre Dumas, pere,
+has been surprisingly ill-served by his English-language translators.`;
 const STATE = {
     allLetters: [],
     characterStats: {},
@@ -33,7 +34,7 @@ const underlineFirstLetter = () => {
     firstLetterDiv === null || firstLetterDiv === void 0 ? void 0 : firstLetterDiv.classList.add("current");
 };
 const breakTextIntoCharacters = () => {
-    const individualCharacters = TEXT.split("");
+    const individualCharacters = TEXT.replace(/\n/g, " ").split("");
     STATE.allLetters = individualCharacters;
 };
 const addLetterElementsToScreen = () => {
