@@ -96,6 +96,9 @@ const updateKeyLabel = (correct) => {
     const character = STATE.allLetters[STATE.lettersTyped].toLowerCase();
     updateAccuracy(correct, character);
     updateAverageTime(correct, character);
+    if (!correct) {
+        darkenKey(character);
+    }
 };
 const updateAccuracy = (correct, character) => {
     const characterStats = STATE.characterStats[character];
@@ -109,6 +112,30 @@ const updateAverageTime = (correct, character) => {
     const label = document.getElementById(`${character}-key-average-time-label`);
     if (label != null) {
         label.innerText = `${characterStats.averageTimeToType}ms`;
+    }
+};
+const darkenKey = (character) => {
+    // TODO: this isn't ideal; we're forcing a one-time change in styling.
+    // A better approach would be updating letter content and style on each keypress
+    // but this solution is OK for a prototype
+    const key = document.getElementById(`${character}-key`);
+    if (key != null) {
+        // this assumes a constant background of rgb(234, 234, 234)
+        // and decreases g and b values to make the key redder
+        // ideally, we'd read the ACTUAL background value (which is inherited right now)
+        // but again, a long-term solution should be to calculate it based off key stats
+        const currentBackground = key.style.backgroundColor;
+        if (currentBackground === "") {
+            key.style.backgroundColor = "rgb(234, 221, 221)";
+        }
+        // this is SO hacky. It assumes the color has been set as rgb()
+        const splitValues = key.style.backgroundColor.split(",");
+        let red = parseInt(splitValues[0].replace(/^\D+/g, ""));
+        let green = parseInt(splitValues[1].replace(/^\D+/g, ""));
+        let blue = parseInt(splitValues[2].replace(/^\D+/g, ""));
+        green = green > 10 ? (green -= 10) : green;
+        blue = blue > 10 ? (blue -= 10) : blue;
+        key.style.backgroundColor = `rgba(${red}, ${green}, ${blue})`;
     }
 };
 const isValidChar = (key) => {
